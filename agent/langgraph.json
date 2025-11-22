@@ -1,0 +1,7 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "graphs": {
+    "belova": "./src/graph.ts:belova"
+  },
+    "env": "./.env"
+}
