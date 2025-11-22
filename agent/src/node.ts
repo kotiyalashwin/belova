@@ -5,7 +5,7 @@ import {
   type WriterState as ContextState,
 } from "./schema";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { Send } from "@langchain/langgraph";
+import { Send, type LangGraphRunnableConfig } from "@langchain/langgraph";
 import { promises as fs } from "fs";
 import path from "path";
 const ai = new ChatGoogleGenerativeAI({
@@ -53,13 +53,19 @@ export const generateFiles = async (state: GraphState) => {
   return { files: result.files };
 };
 
-//conditional edge always expects and array of SendObject
+//orchestrator always expects and array of SendObject
 export const assignWriters = (state: GraphState) => {
   return state.files?.map((file) => new Send("writer", file)) || [];
 };
-export const writer = async (state: WriterState) => {
+export const writer = async (state: WriterState, config?:LangGraphRunnableConfig) => {
   const { filePath, content } = state;
-
+    if (config?.writer) {
+    config.writer({
+      type: "file_started",
+      filePath: filePath,
+      message: `Starting to write ${filePath}...`
+    });
+  }
   //TODO: add e2b logic here
   const fullPath = path.join("app", filePath);
   await fs.mkdir(path.dirname(fullPath), { recursive: true });
