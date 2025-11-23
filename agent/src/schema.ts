@@ -1,4 +1,3 @@
-
 import * as z from "zod";
 const filesSchema = z.object({
   filePath: z.string(),
@@ -9,10 +8,12 @@ export const graphStateSchema = z.object({
   prompt: z.string(),
   files: z.array(filesSchema).optional(),
   completed: z.array(z.string()).optional(),
+  commands: z.array(z.string()),
 });
 
 export const codeAiSchema = z.object({
   files: z.array(filesSchema),
+  commands: z.array(z.string()),
 });
 
 export type GraphState = z.infer<typeof graphStateSchema>;

@@ -1,7 +1,7 @@
 
 import { StateGraph } from "@langchain/langgraph";
-import { graphStateSchema } from "./schema";
-import { assignWriters, generateFiles, getContext, synthesizer, writer } from "./node";
+import { graphStateSchema, type GraphState } from "./schema";
+import { assignWriters, generateFiles, getContext, handleCommands, synthesizer, writer } from "./node";
 
 
 export const belova = new StateGraph(graphStateSchema)
@@ -9,11 +9,13 @@ export const belova = new StateGraph(graphStateSchema)
 .addNode("getcontext",getContext)
 .addNode("codegen", generateFiles)
 .addNode("writer", writer,{defer:true})
+.addNode("commandhandler", handleCommands)
 .addNode("synthesizer", synthesizer)
 //Edges
 .addEdge("__start__","getcontext")
 .addEdge("getcontext","codegen")
-.addConditionalEdges("codegen",assignWriters,["writer"])
+.addEdge("codegen","commandhandler")
+.addConditionalEdges("commandhandler",assignWriters,["writer"])
 .addEdge("writer", "synthesizer")
 .addEdge("synthesizer", "__end__")
 .compile()
