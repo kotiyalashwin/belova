@@ -13,6 +13,7 @@ import { Send, type LangGraphRunnableConfig } from "@langchain/langgraph";
 import { promises as fs } from "fs";
 import path from "path";
 import { PROMPT } from "../prompt";
+import {spawn} from "child_process"
 const ai = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash",
 });
@@ -96,24 +97,81 @@ export const assignWriters = (state: GraphState) => {
 };
 
 //Handlers
+
 export const handleCommands = async (
   state: GraphState,
   config?: LangGraphRunnableConfig,
 ) => {
-  if (state.commands.length === 0) {
+  const commands = state.commands || [];
+
+  if (!PROJECT_ROOT) {
+    throw new Error(
+      "PROJECT_ROOT env is not set inside LangGraph environment.",
+    );
+  }
+
+  if (commands.length === 0) {
     return {};
   }
 
-  for (const command of state.commands) {
-    if (config?.writer) {
-      config.writer({
-        type: "executing",
-        message: `Running: ${command}`,
+  for (const rawCmd of commands) {
+    config?.writer?.({
+      type: "executing",
+      message: `Running: ${rawCmd}`,
+    });
+
+    await new Promise<void>((resolve, reject) => {
+      const proc = spawn("sh", ["-c", rawCmd], {
+        cwd: PROJECT_ROOT,
+        env: process.env,
+        stdio: ["pipe", "pipe", "pipe"], // stdin, stdout, stderr
       });
-    }
+
+      // Stream stdout
+      proc.stdout?.on("data", (chunk: Buffer) => {
+        config?.writer?.({
+          type: "stdout",
+          message: chunk.toString(),
+        });
+      });
+
+      // Stream stderr
+      proc.stderr?.on("data", (chunk: Buffer) => {
+        config?.writer?.({
+          type: "stderr",
+          message: chunk.toString(),
+        });
+      });
+
+      // Handle process exit
+      proc.on("close", (exitCode: number | null) => {
+        if (exitCode !== 0) {
+          config?.writer?.({
+            type: "error",
+            message: `Command failed with exit code ${exitCode}: ${rawCmd}`,
+          });
+          reject(new Error(`Command "${rawCmd}" failed with code ${exitCode}`));
+          return;
+        }
+
+        config?.writer?.({
+          type: "completed",
+          message: `Completed: ${rawCmd}`,
+        });
+
+        resolve();
+      });
+
+      // Handle process errors (e.g., command not found)
+      proc.on("error", (err: Error) => {
+        config?.writer?.({
+          type: "error",
+          message: `Failed to execute command: ${err.message}`,
+        });
+        reject(err);
+      });
+    });
   }
 
-  return {
-    command: [],
-  };
+  return { commands: [] };
 };

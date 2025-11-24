@@ -8,7 +8,7 @@ console.log("Thread created:", thread);
 //STREAMING
 const stream = await client.runs.stream(thread.thread_id, "belova", {
   input: {
-    prompt: "Create profile card with glass background and good micro-interraction ",
+    prompt: "Create a dark themed SAAS app landing page inspired from dodopayments.com with good motion graphics and micro interractions.Also use good color template which are mordern and not old fashioned.",
     ctx: [],
     files: [],
     completed: [],
