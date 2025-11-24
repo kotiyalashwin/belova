@@ -8,7 +8,7 @@ console.log("Thread created:", thread);
 //STREAMING
 const stream = await client.runs.stream(thread.thread_id, "belova", {
   input: {
-    prompt: "Create a multiple component landing page ",
+    prompt: "Create profile card with glass background and good micro-interraction ",
     ctx: [],
     files: [],
     completed: [],
@@ -29,7 +29,7 @@ for await (const chunk of stream) {
     }
     if (chunkData.type === "executing") {
       console.log(`=============COMMAND============\n`);
-      console.log(chunkData.message);
+      console.log(`${chunkData.message} \n`);
     }
   }
 }

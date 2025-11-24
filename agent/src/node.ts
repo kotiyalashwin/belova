@@ -12,10 +12,14 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { Send, type LangGraphRunnableConfig } from "@langchain/langgraph";
 import { promises as fs } from "fs";
 import path from "path";
+import { PROMPT } from "../prompt";
 const ai = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash",
 });
-const PROJECT_ROOT= process.env.E2B_MODE === "true" ? "/home/user/react-app" : path.resolve("app")
+const PROJECT_ROOT =
+  process.env.E2B_MODE === "true"
+    ? "/home/user/react-app"
+    : path.resolve("react-app");
 //NODES
 
 export const getContext = async (state: GraphState) => {
@@ -50,10 +54,11 @@ export const generateFiles = async (state: GraphState) => {
 
   //prompt injection and context injection
   const coder = ai.withStructuredOutput(codeAiSchema);
+  const prompt = PROMPT;
   const result = await coder.invoke([
     {
       role: "system",
-      content: `You are an AI based website builder which already has a precooked vite react app with TailwindCss and ShadCn installed, Based on users requirement you have to create the user application. You have access to the following context files: ${ctxString}. If there are no context files then it is a fresh project else you have to do changes according to the already present files. You can choose components that you want to add for the styling, You cannot run command but provide a list of commands that can be run for the dependencies. `,
+      content: prompt,
     },
     { role: "human", content: state.prompt },
   ]);
@@ -91,7 +96,7 @@ export const assignWriters = (state: GraphState) => {
 };
 
 //Handlers
-export const handleCommands = async(
+export const handleCommands = async (
   state: GraphState,
   config?: LangGraphRunnableConfig,
 ) => {
@@ -106,7 +111,6 @@ export const handleCommands = async(
         message: `Running: ${command}`,
       });
     }
-    new Promise(r=> setTimeout(r,300)) 
   }
 
   return {
