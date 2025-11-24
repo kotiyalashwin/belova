@@ -4,7 +4,7 @@ const client = new Client({ apiUrl: "http://localhost:8080" });
 
 const thread = await client.threads.create();
 console.log("Thread created:", thread);
-
+try{
 //STREAMING
 const stream = await client.runs.stream(thread.thread_id, "belova", {
   input: {
@@ -16,7 +16,6 @@ const stream = await client.runs.stream(thread.thread_id, "belova", {
   },
   streamMode: "custom",
 });
-
 for await (const chunk of stream) {
   if (chunk.event === "custom") {
     const chunkData = chunk.data as {
@@ -32,4 +31,7 @@ for await (const chunk of stream) {
       console.log(`${chunkData.message} \n`);
     }
   }
+}
+}catch(e){
+    console.error(e)
 }
