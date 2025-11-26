@@ -13,7 +13,7 @@ import { Send, type LangGraphRunnableConfig } from "@langchain/langgraph";
 import { promises as fs } from "fs";
 import path from "path";
 import { PROMPT } from "../prompt";
-import {spawn} from "child_process"
+import {spawn} from "node:child_process"
 const ai = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash",
 });
@@ -23,7 +23,7 @@ const PROJECT_ROOT =
     : path.resolve("react-app");
 //NODES
 
-export const getContext = async (state: GraphState) => {
+export const getContext = async ( ) => {
   //do the db stuff here
   const ctx: ContextState[] = [];
   //adds the context to the graphState
@@ -124,7 +124,7 @@ export const handleCommands = async (
       const proc = spawn("sh", ["-c", rawCmd], {
         cwd: PROJECT_ROOT,
         env: process.env,
-        stdio: ["pipe", "pipe", "pipe"], // stdin, stdout, stderr
+        stdio: ["pipe", "pipe", "pipe"], 
       });
 
       // Stream stdout
