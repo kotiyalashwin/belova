@@ -137,8 +137,8 @@ export class AgentService {
             console.log(`[Application]: Ready at https://${react_host}`);
 
             await this._send_ws_message(socket, {
-                e: 'thinking',
-                message: `Application ready at: https://${react_host}`
+                e: 'finished',
+                message: `https://${react_host}`
             });
 
         } catch (error) {

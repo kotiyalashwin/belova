@@ -7,6 +7,7 @@ import CreatedMessage from "./created";
 import Thinking from "./thinking";
 import Terminal from "./terminal";
 import FileCreating from "./file-creating";
+import Finished from "./finished";
 
 type ChatType = "user" | "ai";
 
@@ -14,7 +15,7 @@ interface ChatMessage {
 	id: string;
 	type: ChatType;
 	message: string;
-	event?: "thinking" | "started" | "file_created" | "file_creating" | "completed" | "command";
+	event?: "thinking" | "started" | "file_created" | "file_creating" | "completed" | "command" | "finished";
 	completed?: boolean;
 }
 
@@ -48,7 +49,7 @@ export default function Chat({
 
 	  ws.onmessage = (event) => {
 	    try {
-	      const data: { e: "started" | "file_created" | "file_creating" | "completed" | "thinking" | "command" ; message: string } = JSON.parse(
+	      const data: { e: "started" | "file_created" | "file_creating" | "completed" | "thinking" | "command" | "finished" ; message: string } = JSON.parse(
 	        event.data
 	      );
 
@@ -116,6 +117,8 @@ export default function Chat({
                         return <div className="text-neutral-500 px-4 animate-pulse text-sm font-light">Creating Project...</div>
                     case "command":
                         return <Terminal command={message}/>
+                    case "finished":
+                        return <Finished message={message}/>
                     
 				}
 			case "user":

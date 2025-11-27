@@ -1,5 +1,5 @@
 export interface WebSocketMessage {
-  e: 'started' | 'thinking' | 'file_creating' | 'file_created' | 'command' | 'command_failed' | 'command_error' | 'tool_error' | 'error';
+  e: 'started' | 'thinking' | 'file_creating' | 'file_created' | 'command' | 'command_failed' | 'command_error' | 'tool_error' | 'error'| 'finished';
   message?: string;
   error?: string;
   exit_code?: number;
