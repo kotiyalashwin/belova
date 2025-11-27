@@ -65,3 +65,9 @@ export interface AgentService {
   run_agent_stream(prompt: string, project_id: string, socket?: ExtendedWebSocket): Promise<void>;
   sandboxes: Map<string, any>;
 }
+
+
+export type FileNode = {
+    file_path: string,
+    content: string
+}
