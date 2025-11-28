@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SendHorizonal } from "lucide-react";
-import * as motion from "motion/react-client";
 import { generateRandomString } from "@/lib/randomId";
 
 export default function InputCard() {

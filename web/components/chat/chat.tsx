@@ -1,7 +1,5 @@
 "use client";
-import { ChevronRight, CircleCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import CreatedMessage from "./created";
 import Thinking from "./thinking";

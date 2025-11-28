@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronDown, File, Folder, FolderOpen, FileCode, FileJson, FileText, Image } from 'lucide-react';
+import { ChevronRight, ChevronDown, File, Folder, FolderOpen, FileCode, FileJson, FileText, Image as ImageIcon } from 'lucide-react';
 import { FileNode } from './viewer';
 
 interface FileExplorerProps {
@@ -9,7 +9,7 @@ interface FileExplorerProps {
 
 export const FileExplorer = ({ files , onFileClick} : FileExplorerProps) => {
   const [expandedFolders, setExpandedFolders] = useState(new Set());
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile] = useState();
 
   const getFileIcon = (fileName:string) => {
     const iconProps = { size: 14, className: "flex-shrink-0" };
@@ -31,7 +31,7 @@ export const FileExplorer = ({ files , onFileClick} : FileExplorerProps) => {
       case 'svg':
       case 'ico':
       case 'gif':
-        return <Image {...iconProps} className="flex-shrink-0 text-purple-500/70" />;
+        return <ImageIcon {...iconProps}   className="flex-shrink-0 text-purple-500/70" />;
       case 'css':
       case 'scss':
       case 'sass':
