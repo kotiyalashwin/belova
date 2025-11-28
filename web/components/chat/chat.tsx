@@ -40,7 +40,7 @@ export default function Chat({
 	});
 
 	useEffect(() => {
-	  const ws = new WebSocket(`ws://localhost:3001/ws/${projectId}`);
+	  const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/${projectId}`);
 
 	  ws.onopen = () => {
 	    console.log("WebSocket connected");

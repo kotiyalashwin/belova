@@ -69,14 +69,14 @@ export const CodeViewer: React.FC<{ projectId: string,prompt:string }> = ({
 	useEffect(() => {
         setTree([])
 		axios
-			.post(`http://localhost:3001/chat/${projectId}`, {
+			.post(`${process.env.NEXT_PUBLIC_API_URL}/${projectId}`, {
 				prompt: prompt,
 			})
 			.then((res) => {
 				const data = res.data;
 				const files: FileType[] = data.files;
 				const treeFiles = buildFileTree(files);
-                const prevUrl = `https://5173-${data.sandbox_id}.e2b.app`
+                const prevUrl = `${process.env.NEXT_PUBLIC_PREVIEW_BASE_URL}-${data.sandbox_id}.e2b.app`
                 setPrevUrl(prevUrl)
 				setTree(treeFiles);
 				setSelectedFile(treeFiles[0]);
